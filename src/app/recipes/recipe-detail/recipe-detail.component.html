@@ -12,6 +12,7 @@
     <div class="col-xs-12">
         <div class="dropdown">
             <button
+                [appDropdown]="dropdownTarget"
                 class="btn btn-primary dropdown-toggle"
                 type="button"
                 id="dropdownMenuButton"
@@ -20,7 +21,11 @@
             >
                 Manage Recipe
             </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <ul
+                #dropdownTarget
+                class="dropdown-menu"
+                aria-labelledby="dropdownMenuButton"
+            >
                 <li>
                     <a class="dropdown-item" href="#">Add to Shopping List</a>
                 </li>

@@ -16,13 +16,19 @@ export class RecipeService {
             'https://hips.hearstapps.com/delish/assets/17/36/1504715566-delish-fettuccine-alfredo.jpg',
             [new Ingredient('Pasta', 1), new Ingredient('Meat', 1)]
         ),
+        new Recipe(
+            'Pasta 1',
+            'Nice recipe',
+            'https://hips.hearstapps.com/delish/assets/17/36/1504715566-delish-fettuccine-alfredo.jpg',
+            [new Ingredient('Pasta', 1), new Ingredient('Meat', 1)]
+        ),
     ];
 
     getRecipes() {
         return this.recipes.slice();
     }
 
-    getRecipe() {
-        
+    getRecipe(index: number) {
+        return this.recipes[index];
     }
 }

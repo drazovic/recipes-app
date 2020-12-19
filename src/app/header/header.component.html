@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Recipes app</a>
         <button
-            [appDropdown]="dropdownTarget"
+            [appDropdown]="mobileMenuDropdownTarget"
             class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
@@ -16,34 +16,54 @@
         <div
             class="collapse navbar-collapse"
             id="navbarSupportedContent"
-            #dropdownTarget
+            #mobileMenuDropdownTarget
         >
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#"
+                    <a
+                        class="nav-link active"
+                        aria-current="page"
+                        routerLink="/recipes"
+                        routerLinkActive="active"
                         >Recipes</a
                     >
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Shopping List</a>
+                    <a
+                        class="nav-link"
+                        routerLink="/shopping-list"
+                        routerLinkActive="active"
+                        >Shopping List</a
+                    >
                 </li>
             </ul>
             <ul class="navbar-nav d-flex">
                 <li class="nav-item dropdown">
                     <a
+                        [appDropdown]="manageDropdownTarget"
                         class="nav-link dropdown-toggle"
-                        href="#"
                         id="navbarDropdown"
                         role="button"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
+                        style="cursor: pointer"
                     >
                         Manage
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Save Data</a></li>
+                    <ul
+                        #manageDropdownTarget
+                        class="dropdown-menu"
+                        aria-labelledby="navbarDropdown"
+                    >
                         <li>
-                            <a class="dropdown-item" href="#">Fetch Data</a>
+                            <a class="dropdown-item" style="cursor: pointer"
+                                >Save Data</a
+                            >
+                        </li>
+                        <li>
+                            <a class="dropdown-item" style="cursor: pointer"
+                                >Fetch Data</a
+                            >
                         </li>
                     </ul>
                 </li>

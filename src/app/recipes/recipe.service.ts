@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Ingredient } from '../shared/ingredient.model';
 
 import { Recipe } from './recipe.model';
 
@@ -9,21 +8,6 @@ import { Recipe } from './recipe.model';
 })
 export class RecipeService {
     recipesChanged = new Subject<Recipe[]>();
-
-    // private recipes: Recipe[] = [
-    //     new Recipe(
-    //         'Pasta',
-    //         'Nice recipe',
-    //         'https://hips.hearstapps.com/delish/assets/17/36/1504715566-delish-fettuccine-alfredo.jpg',
-    //         [new Ingredient('Pasta', 1), new Ingredient('Meat', 1)]
-    //     ),
-    //     new Recipe(
-    //         'Pasta 1',
-    //         'Nice recipe',
-    //         'https://hips.hearstapps.com/delish/assets/17/36/1504715566-delish-fettuccine-alfredo.jpg',
-    //         [new Ingredient('Pasta', 1), new Ingredient('Meat', 1)]
-    //     ),
-    // ];
 
     private recipes: Recipe[] = [];
 

@@ -19,13 +19,21 @@
             #mobileMenuDropdownTarget
         >
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
+                <li class="nav-item" *ngIf="isAuthenticated">
                     <a
-                        class="nav-link active"
+                        class="nav-link"
                         aria-current="page"
                         routerLink="/recipes"
                         routerLinkActive="active"
                         >Recipes</a
+                    >
+                </li>
+                <li class="nav-item" *ngIf="!isAuthenticated">
+                    <a
+                        class="nav-link"
+                        routerLink="/auth"
+                        routerLinkActive="active"
+                        >Authenticate</a
                     >
                 </li>
                 <li class="nav-item">
@@ -38,6 +46,9 @@
                 </li>
             </ul>
             <ul class="navbar-nav d-flex">
+                <li class="nav-item" *ngIf="isAuthenticated">
+                    <a class="nav-link" (click)="onLogout()">Logout</a>
+                </li>
                 <li class="nav-item dropdown">
                     <a
                         [appDropdown]="manageDropdownTarget"
@@ -46,7 +57,7 @@
                         role="button"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
-                        style="cursor: pointer"
+                        *ngIf="isAuthenticated"
                     >
                         Manage
                     </a>
@@ -56,16 +67,13 @@
                         aria-labelledby="navbarDropdown"
                     >
                         <li>
-                            <a
-                                class="dropdown-item"
-                                style="cursor: pointer"
-                                (click)="onSaveData()"
+                            <a class="dropdown-item" (click)="onSaveData()"
                                 >Save Data</a
                             >
                         </li>
                         <li>
-                            <a class="dropdown-item" style="cursor: pointer"
-                            (click)="onFetchData()" >Fetch Data</a
+                            <a class="dropdown-item" (click)="onFetchData()"
+                                >Fetch Data</a
                             >
                         </li>
                     </ul>

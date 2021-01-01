@@ -8,7 +8,7 @@ import { HeaderComponent } from './header/header.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
 import { AuthInterseptorService } from './auth/auth-interceptor.service';
-import * as shoppingList from './shopping-list/store/shopping-list.reducer';
+import * as fromApp from './store/app.reducer';
 
 @NgModule({
     declarations: [AppComponent, HeaderComponent],
@@ -16,7 +16,7 @@ import * as shoppingList from './shopping-list/store/shopping-list.reducer';
         BrowserModule,
         HttpClientModule,
         AppRoutingModule,
-        StoreModule.forRoot({ shoppingList: shoppingList.reducer }),
+        StoreModule.forRoot(fromApp.appReducer),
         SharedModule,
     ],
     providers: [

@@ -1,7 +1,15 @@
 import { createAction, props } from '@ngrx/store';
 
-export const login = createAction(
-    '[Auth] login',
+export const loginStart = createAction(
+    '[Auth] Login Start',
+    props<{
+        email: string;
+        password: string;
+    }>()
+);
+
+export const authenticateSuccess = createAction(
+    '[Auth] Authenticate Success',
     props<{
         email: string;
         userId: string;
@@ -9,5 +17,22 @@ export const login = createAction(
         expirationDate: Date;
     }>()
 );
+
+export const authenticateFail = createAction(
+    '[Auth] Authenticate Fail',
+    props<{
+        authError: string;
+    }>()
+);
+
+export const signupStart = createAction(
+    '[Auth] Signup Start',
+    props<{
+        email: string;
+        password: string;
+    }>()
+);
+
+export const clearError = createAction('[Auth] Clear Error');
 
 export const logout = createAction('[Auth] logout');

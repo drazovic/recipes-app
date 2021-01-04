@@ -1,10 +1,5 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { environment } from 'src/environments/environment';
 
 import { User } from './user.model';
 import * as fromApp from '../store/app.reducer';
@@ -25,35 +20,7 @@ export interface AuthResponseData {
 export class AuthService {
     private tokenExpirationTimer: any;
 
-    constructor(
-        private http: HttpClient,
-        private router: Router,
-        private store: Store<fromApp.AppState>
-    ) {}
-
-    signup(email: string, password: string) {
-        return this.http
-            .post<AuthResponseData>(
-                `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`,
-                { email: email, password: password, returnSecureToken: true }
-            )
-            .pipe(
-                catchError(this.handleError),
-                tap(this.handleAuthentication.bind(this))
-            );
-    }
-
-    login(email: string, password: string) {
-        return this.http
-            .post<AuthResponseData>(
-                `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
-                { email: email, password: password, returnSecureToken: true }
-            )
-            .pipe(
-                catchError(this.handleError),
-                tap(this.handleAuthentication.bind(this))
-            );
-    }
+    constructor(private store: Store<fromApp.AppState>) {}
 
     autoLogin() {
         const stringifiedUserData = localStorage.getItem('userData');
@@ -76,7 +43,7 @@ export class AuthService {
 
         if (loadedUser.token) {
             this.store.dispatch(
-                AuthActions.login({
+                AuthActions.authenticateSuccess({
                     email: loadedUser.email,
                     userId: loadedUser.id,
                     token: loadedUser.token,
@@ -92,7 +59,6 @@ export class AuthService {
 
     logout() {
         this.store.dispatch(AuthActions.logout());
-        this.router.navigate(['/auth']);
         localStorage.removeItem('userData');
         if (this.tokenExpirationTimer) {
             clearTimeout(this.tokenExpirationTimer);
@@ -103,49 +69,5 @@ export class AuthService {
         this.tokenExpirationTimer = setTimeout(() => {
             this.logout();
         }, expirationDuration);
-    }
-
-    private handleAuthentication(responseData: AuthResponseData) {
-        const expirationDate = new Date(
-            new Date().getTime() + +responseData.expiresIn * 1000
-        );
-        const user = new User(
-            responseData.email,
-            responseData.localId,
-            responseData.idToken,
-            expirationDate
-        );
-        this.store.dispatch(
-            AuthActions.login({
-                email: responseData.email,
-                userId: responseData.localId,
-                token: responseData.idToken,
-                expirationDate: expirationDate,
-            })
-        );
-        this.autoLogout(+responseData.expiresIn * 1000);
-        localStorage.setItem('userData', JSON.stringify(user));
-    }
-
-    private handleError(errorResponse: HttpErrorResponse) {
-        let errorMessage = 'An error occured.';
-        if (!errorResponse.error || !errorResponse.error.error) {
-            throwError(errorMessage);
-        }
-        switch (errorResponse.error.error.message) {
-            case 'EMAIL_EXISTS':
-                errorMessage =
-                    'The email address is already in use by another account.';
-                break;
-            case 'EMAIL_NOT_FOUND':
-                errorMessage =
-                    'There is no user record corresponding to this identifier. The user may have been deleted.';
-                break;
-            case 'INVALID_PASSWORD':
-                errorMessage =
-                    'The password is invalid or the user does not have a password.';
-                break;
-        }
-        return throwError(errorMessage);
     }
 }

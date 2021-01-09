@@ -5,6 +5,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { map, catchError, switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../auth.service';
 import { User } from '../user.model';
 
 import * as AuthActions from './auth.actions';
@@ -83,6 +84,11 @@ export class AuthEffects {
                         }
                     )
                     .pipe(
+                        tap((responseData) => {
+                            this.authService.setLogoutTimer(
+                                +responseData.expiresIn * 1000
+                            );
+                        }),
                         map((responseData) => {
                             return handleAuthentication(responseData);
                         }),
@@ -108,6 +114,11 @@ export class AuthEffects {
                         }
                     )
                     .pipe(
+                        tap((responseData) => {
+                            this.authService.setLogoutTimer(
+                                +responseData.expiresIn * 1000
+                            );
+                        }),
                         map((responseData) => {
                             return handleAuthentication(responseData);
                         }),
@@ -122,7 +133,7 @@ export class AuthEffects {
     authRedirect$ = createEffect(
         () =>
             this.actions$.pipe(
-                ofType(AuthActions.authenticateSuccess, AuthActions.logout),
+                ofType(AuthActions.authenticateSuccess),
                 tap(() => {
                     this.router.navigate(['/']);
                 })
@@ -135,7 +146,9 @@ export class AuthEffects {
             this.actions$.pipe(
                 ofType(AuthActions.logout),
                 tap(() => {
+                    this.authService.clearLogoutTimer();
                     localStorage.removeItem('userData');
+                    this.router.navigate(['/auth']);
                 })
             ),
         { dispatch: false }
@@ -164,17 +177,17 @@ export class AuthEffects {
                 );
 
                 if (loadedUser.token) {
+                    const expirationDuration =
+                        new Date(userData._tokenExpirationDate).getTime() -
+                        new Date().getTime();
+                    this.authService.setLogoutTimer(expirationDuration);
+
                     return AuthActions.authenticateSuccess({
                         email: loadedUser.email,
                         userId: loadedUser.id,
                         token: loadedUser.token,
                         expirationDate: new Date(userData._tokenExpirationDate),
                     });
-
-                    // const expirationDuration =
-                    //     new Date(userData._tokenExpirationDate).getTime() -
-                    //     new Date().getTime();
-                    // this.autoLogout(expirationDuration);
                 } else {
                     return { type: 'Dummy' };
                 }
@@ -185,6 +198,7 @@ export class AuthEffects {
     constructor(
         private actions$: Actions,
         private http: HttpClient,
-        private router: Router
+        private router: Router,
+        private authService: AuthService
     ) {}
 }

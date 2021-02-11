@@ -7,3 +7,20 @@ export const setRecipes = createAction(
 );
 
 export const fetchRecipes = createAction('[Recipes] Fetch Recipes');
+
+export const addRecipe = createAction('[Recipes] Add Recipes', props<Recipe>());
+
+export const updateRecipe = createAction(
+    '[Recipes] Update Recipes',
+    props<{ index: number; newRecipe: Recipe }>()
+);
+
+export const deleteRecipe = createAction(
+    '[Recipes] Delete Recipes',
+    props<{ index: number }>()
+);
+
+export const storeRecipes = createAction(
+    '[Recipes] Store Recipes'
+);
+

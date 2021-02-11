@@ -16,6 +16,25 @@ const recipesReducer = createReducer(
     on(RecipesActions.setRecipes, (state, { recipes }) => ({
         ...state,
         recipes: [...recipes],
+    })),
+    on(RecipesActions.addRecipe, (state, newRecipe) => ({
+        ...state,
+        recipes: [...state.recipes, newRecipe],
+    })),
+    on(RecipesActions.updateRecipe, (state, { index, newRecipe }) => {
+        const updatedRecipe = { ...state.recipes[index], ...newRecipe };
+
+        const updatedRecipes = [...state.recipes];
+        updatedRecipes[index] = updatedRecipe;
+
+        return {
+            ...state,
+            recipes: updatedRecipes,
+        };
+    }),
+    on(RecipesActions.deleteRecipe, (state, { index }) => ({
+        ...state,
+        recipes: state.recipes.filter((recipe, index) => index !== index),
     }))
 );
 

@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
-import { map, switchMap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { map, switchMap, withLatestFrom } from 'rxjs/operators';
 
-import { AuthService } from 'src/app/auth/auth.service';
 import { Recipe } from '../recipe.model';
 import * as RecipesActions from '../store/recipe.actions';
+import * as fromApp from '../../store/app.reducer';
 
 @Injectable()
 export class RecipeEffects {
@@ -36,5 +36,24 @@ export class RecipeEffects {
         )
     );
 
-    constructor(private actions$: Actions, private http: HttpClient) {}
+    storeRecipes$ = createEffect(
+        () =>
+            this.actions$.pipe(
+                ofType(RecipesActions.storeRecipes),
+                withLatestFrom(this.store.select('recipes')),
+                switchMap(([actionData, recipesState]) => {
+                    return this.http.put(
+                        'https://recipe-app-b5098-default-rtdb.firebaseio.com/recipes.json',
+                        recipesState.recipes
+                    );
+                })
+            ),
+        { dispatch: false }
+    );
+
+    constructor(
+        private actions$: Actions,
+        private http: HttpClient,
+        private store: Store<fromApp.AppState>
+    ) {}
 }

@@ -15,7 +15,7 @@ import { take } from 'rxjs/operators';
 @Injectable({
     providedIn: 'root',
 })
-export class RecipesResolverService implements Resolve<Recipe[]> {
+export class RecipesResolverService implements Resolve<{ recipes: Recipe[] }> {
     constructor(
         private store: Store<fromApp.AppState>,
         private actions$: Actions
